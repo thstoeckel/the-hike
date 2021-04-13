@@ -1,0 +1,899 @@
+%% Dialog %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The Hike
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+(story title) The Hike
+(story author) Thomas Stoeckel
+(story blurb) You are on a hike through the mountains with a friend of a friend
+  that did not come along after all and now it's the two of you.
+(story noun) An interactive fiction
+(story ifid) E67D140D-E99C-42E4-949D-2DA7026C1035
+(story release 1)
+
+(library links enabled)
+(default actions enabled)
+
+(intro) You are on a hike through the mountains with Laura. She is a friend of a
+  friend and you do not know her all that well. Actually, you were meant to join
+  both of them on this tour but at the last moment your friend pulled out and you
+  ended up having to spend the day with Laura.
+	(banner)
+	(try [look])
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Chapter 0 - The Cast (Steve & Laura)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Steve
+#him
+(male *)
+(name *) Steve
+(proper *)
+(their *) his
+(* is #in #creek)
+(current player *)
+(descr *)(current player *)
+  Not much to say about an average student with no specific features.
+  (collect $Obj)*($Obj is #wornby *)~(underwear $Obj)(into $List)
+  You are wearing (a $List).
+(descr *)~(current player *)
+  Steve is an ordinary guy. But nice enough.
+  (collect $Obj)*($Obj is #wornby *)~(underwear $Obj)(into $List)
+  He is wearing (a $List).
+(appearance *)~(current player *)
+  Steve is here with you.
+
+%% Steve's clothes
+(clothing *(his-clothing $))
+(*(his-clothing $) belongs to #him)
+(*(his-clothing $) is #wornby #him)
+(descr *(his-clothing $C)) There is nothing special about ($C).
+
+#t-shirt
+(his-clothing *)
+(possession name *) T-shirt
+
+#trousers
+(his-clothing *)
+(possession name *) hiking trousers
+(pair *)
+
+#sneakers
+(his-clothing *)
+(possession name *) sneakers
+(pair *)
+(dict *) shoe
+(plural dict *) shoes
+
+#briefs
+(his-clothing *)
+(underwear *)
+(possession name *) briefs
+(plural *)
+
+#your_backpack
+(container *)
+(clothing *)
+(possession name *) backpack
+(* belongs to #him)
+(* is #wornby #him)
+
+#hoodie_sweater
+(clothing *)
+(possession name *) hoodie sweater
+(* is hidden)
+(* belongs to #him)
+(* is #in #your_backpack)
+(instead of [give * to #her])(#top is wet)
+  (#her is #in $Room)($Room is dry)
+  (let #her remove #top)
+  (let #her wear *)
+(narrate #her removing #top)
+(narrate #her wearing *)
+  You hand (#her) your (#hoodie_sweater) and she gives you a grateful smile.
+  She quickly strips off her top and you catch a glimpse of her tits before they
+  disappear again under your sweater.
+
+%% Steve's body
+(bodypart *(yourbody $))
+(*(yourbody $) belongs to #him)
+(*(yourbody $) is #partof #him)
+(descr *(yourbody $C))(current player #him)
+  Hard to see without a mirror. But from your memory everything is quite OK.
+(descr *(yourbody $C))(current player #her)
+  Quite handsome.
+
+#your_head
+(yourbody *)
+(possession name *) head
+(dict *) eye face hair mouth
+(plural dict *) eyes
+
+#your_ass
+(yourbody *)
+(possession name *) ass
+(an *)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Laura
+#her
+(female *)
+(name *) Laura
+(proper *)
+(their *) her
+(* is #in #creek)
+(descr *)~(current player *)
+  Laura is a student in her twenties. Rather compact but not unattractive.
+  (collect $Obj)*($Obj is #wornby *)~(underwear $Obj)(into $List)
+  She is wearing (a $List).
+(descr *)(current player *)
+  You never really liked how you look. But who does?
+  (collect $Obj)*($Obj is #wornby *)~(underwear $Obj)(into $List)
+  You are wearing (a $List).
+
+%% Laura's clothes
+(clothing *(her-clothing $))
+(*(her-clothing $) belongs to #her)
+(*(her-clothing $) is #wornby #her)
+(descr *(her-clothing $C))(current player #him)
+  (#her) is wearing ordinary clothes, nothing fancy. They seem to fit her well
+  though.
+(descr *(her-clothing $C))(current player #her)
+  You have no clue why women are all about clothes. You rather stick with the
+  practical approach to clothing.
+
+#top
+(her-clothing *)
+(possession name *) top
+
+#shorts
+(her-clothing *)
+(possession name *) shorts
+(pair *)
+
+#hiking_boots
+(her-clothing *)
+(possession name *) hiking boots
+(pair *)
+
+#panties
+(her-clothing *)
+(underwear *)
+(possession name *) panties
+(plural *)
+
+#her_backpack
+(container *)
+(clothing *)
+(possession name *) backpack
+(* belongs to #her)
+(* is #wornby #her)
+
+%% Laura's body
+(bodypart *(herbody $))
+(*(herbody $) belongs to #her)
+(*(herbody $) is #partof #her)
+(descr *(herbody $C))(current player #him) You like what you see.
+(descr *(herbody $C))(current player #her) There is nothing wrong with ($C).
+
+#her_head
+(herbody *)
+(possession name *) head
+(dict *) eye face hair mouth
+(plural dict *) eyes
+
+#her_ass
+(herbody *)
+(possession name *) ass
+(an *)
+
+%% Conversation
+(perform [talk to #her]) (#her) does not seem to encourage conversation.
+  Maybe if you asked about something concrete she might answer.
+(perform [talk to #her about $]) (#her) looks at you but does not answer.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Chapter 1 - Crossing the Creek
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Backdrop on the trail
+#trail
+(name *) trail
+(singleton *)
+((on-trail $) attracts *)
+(descr *) 
+  The hiking trail is roughly running from (#south) to (#north) upwards along
+  the side of (a #mountain). It's not wide enough to walk side-by-side.
+(dict *) footpath
+
+#mountain
+(name *) mountain
+((on-trail $) attracts *)
+(descr *) 
+  An impressive (#mountain) rises high on the right side of (the #trail).
+  Your goal for today is somewhere up there.
+(plural dict *) mountains
+
+#clouds
+(name *) clouds
+(plural *)
+((outdoors $) attracts *)
+(descr *)(current #weather is #thunderstorm)
+  Rain is pouring down from dark (#clouds).
+(descr *)(current #weather is #rainy)
+  Light rain falls and you can see dark (#clouds) starting to cover the sky.
+(descr *)(current #weather is #cloudy)
+  Dark (#clouds) are forming above.
+(descr *)(current #weather is #sunny)
+  No (#clouds) can be seen in the sky and the sun shines down brightly.
+(dict *) sky sun rain
+
+%% Rooms
+#creek
+(on-trail *)
+(from * go #north to #northern_bank)
+(name *) creek crossing the trail
+(heads *) crossing
+(room header *) At the Creek
+(look *) 
+  You are standing in front of (a #torrent) that crosses the hiking trail which 
+  continues to the (#north). To the (#south) you see (the #trail) winding back
+  to where you came from. 
+  (notice #torrent)
+
+(prevent [leave * #south]) 
+  You are not ready to give up yet. What would (#her) think of you?
+(prevent [leave * #north])(#sneakers is #wornby #him)
+  You won't make it to the other side without getting your (#sneakers) and
+  (#trousers) wet.
+(narrate leaving * #north)
+  (let #her remove #hiking_boots)
+  You step into the ice-cold water and carefully make your way through
+  (the #torrent). Once you are save on the other side you shout: "Come along
+  Laura! It's not difficult." Hesitant, she takes off her hiking boots and
+  follows you. Suddenly, she slips but you are able to grab her arm before she
+  is falling and you pull her safely to the bank of (the #torrent).
+
+#torrent
+(#creek/#northern_bank attracts *)
+(name *) torrent
+(descr *) 
+  The fast-flowing torrent is more shallow where it crosses (the #trail). 
+  In its bed (#scattered_rocks) emerge from the water. 
+  (notice #scattered_rocks)
+(dict *) river creek
+
+#scattered_rocks
+(* is #partof #torrent)
+(name *) scattered rocks
+(heads *) rocks
+(plural *)
+(descr *)~(current #weather is #thunderstorm)
+  The rocks in the (#torrent) look quite slippery. You do not dare to step on them.
+(descr *)(current #weather is #thunderstorm)
+  A constant rumbling tells you about large rocks rolling along the river bed.
+  The water has turned muddy and occasionally a tree branch floats by.
+(dict *) rock stone
+(plural dict *) stones
+
+#northern_bank
+(on-trail *)
+(from * go #south to #creek)
+(from * go #north to #overlooking_valley)
+(name *) northern bank of the creek
+(heads *) bank
+(singleton *)
+(room header *) Northern Bank of the Creek
+(look *) 
+  On this side of (the #torrent) (the #trail) raises upwards to the (#north).
+  There is (#gravel) extending along the river bank.
+(appearance #torrent #in #northern_bank)(current #weather is #thunderstorm)
+  As a consequence of the heavy rain, (the #torrent) has swollen into a river at least
+  double the size it was when you passed it. You hear the deep rumbling of rocks that 
+  are flushed along by the mighty stream.
+(appearance #her #in #northern_bank)~(#hiking_boots is #wornby #her)
+  You can see (#her) sitting on (the #gravel) drying her bare feet.
+
+(prevent [leave * #south])(current #weather is #thunderstorm)
+  As a result of the rain, (the #torrent) now has at least doubled and there is
+  no chance of getting back this way.
+  (now)(#her goal is #shelter)
+(prevent [leave * #south])~(current #weather is #thunderstorm)
+  (#her) stops you as she grasps your intention to cross the (#torrent) again.
+  "No way! We barely managed to cross the first time."
+(narrate leaving * #north)(from * go #north to room $Room)($Room is unvisited)
+  You wait a moment to let (#her) put on (#hiking_boots) again before you
+  continue on (the #trail) together.
+  (let #her wear #hiking_boots)
+  (The #trail) rises to a steep climb and you breath hard trying to keep pace with
+  (#her) ahead of you.
+
+#gravel
+(* is #in #northern_bank)
+(name *) gravel
+(plural *)
+(descr *)
+  Just ordinary gravel covering the river bank.
+(dict *) bank
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Chapter 2 - Coming Closer
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#overlooking_valley
+(on-trail *)
+(from * go #south to #northern_bank)
+(from * go #north to #outside_hut)
+(name *) scenic overlook
+(heads *) overlook
+(room header *) Overlooking the Valley
+(look *) 
+  (The #trail) turns right here allowing for a tremendous outlook into
+  (the #valley) below and continues on to the (#north). There is
+  (a #flat_rock) next to (the #trail) that would be ideal for a break.
+
+(before [leave * #north])(current #weather is #sunny)
+  (now)(current #weather is #cloudy)
+(narrate leaving * #north)(from * go #north to room $Room)($Room is unvisited)
+  The terrain on the flank of the (#mountain) becomes less steep and eventually
+  turns into an meadow. The (#trail) runs through short grass speckled with
+  flowers.
+
+#valley
+(* is #in #overlooking_valley)
+(name *) valley
+(descr *) 
+  Deep below your current position you can see a river meandering across
+  a broad valley.
+(dict *) outlook
+
+#flat_rock
+(on-seat *)
+(* is #in #overlooking_valley)
+(name *) huge flat rock
+(heads *) rock
+(singelton *)
+(descr *) 
+  One of the huge rocks next to (the #trail) has a rather flat surface you
+  could both sit on comfortably.
+(after [climb *])
+  (let #her climb *)
+(narrate #her climbing *) (#her) sits down next to you.
+
+(appearance #her #on #flat_rock)
+  (#her) is sitting next to you on the rock.
+
+#outside_hut
+(on-trail *)
+(from * go #south to #overlooking_valley)
+(from * go #north to #below_waterfall)
+(from * go #in through #door to #inside_hut)
+(name *) area where the trail is passing by a hut
+(heads *) area
+(room header *) By the Hut
+(look *) 
+  (The #trail) passes by what looks like a former mountain pasture with (a #hut) 
+  that looks as if no-one has been around for years.
+  Ahead, (the #trail) rises up on the side of (the #mountain).
+(dict *) pasture
+
+(before [leave * #north])(current #weather is #cloudy)
+  (now)(current #weather is #rainy)
+  It starts raining. Only now you realize that the sun has been blocked by
+  (#clouds) since a while ago.
+(narrate leaving * #north)(from * go #north to room $Room)($Room is unvisited)
+  You are starting to feel your legs while climbing up the narrow path.
+  This reminds you on how little excercise you had lately.
+  
+#hut
+(* is #in #outside_hut)
+(name *) tiny hut
+(descr *) 
+  The walls of the tiny hut are made from rough lumber and the (#roof) is
+  covered with stone shingles. A (#door) leads inside and
+  a (#window) can be seen at the side of the hut.
+(dict *) lumber
+
+#roof
+(name *) roof
+(* is #partof #hut)
+(descr *) 
+  The roof of (the #hut) is covered with stone shingles.
+(dict *) shingle
+(plural dict *) shingles
+
+%% You can climb window to get into the hut
+#window
+(actor supporter *)
+(openable *)
+(* is in order)
+(name *) small window
+(heads *) window
+(* is #partof #hut)
+(descr *) 
+  Looking closer, the dusty window does not reveal much of the interior
+  of (the #hut). To your surprise you see that the handle on the inside does not
+  seem to be in the locked position.
+(dict *) glass
+(narrate opening *) 
+  You push the window frame inwards and with a sharp creak it opens.
+(prevent [climb *])(current room #outside_hut)(* is closed)
+  The window opening seems big enough that your
+  could squeeze through if the window was open in the first place.
+(perform [climb *])(current room #outside_hut)
+  You grab the window frame and pull yourself up. After your
+  squeezed through you land on the floor inside. 
+  (enter #inside_hut)
+
+%% Prevent doing something other than examining with the hut if its not raining yet
+~(prevent [examine $Obj])
+  {($Obj has parent #hut)(or)($Obj = #hut)}
+(prevent [$ $Obj])~(current #weather is #thunderstorm)
+  {($Obj has parent #hut)(or)($Obj = #hut)}
+  (select)
+  "Let's go on and not waste time here." (#her) calls as you move towards (the *).
+	(or)
+	"Leave it alone now. We should continue the hike." (#her) tells you.
+	(or)
+	"Come on now!" (#her) exclaims.
+	(stopping)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Chapter 3 - Bad weather
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#below_waterfall
+(on-trail *)
+(from * go #south to #outside_hut)
+(from * go #north to #rock_face)
+(name *) trail passing below a waterfall
+(heads *) trail
+(room header *) Below Waterfall
+(look *) Looking up from this part of (the #trail) you can see (a #waterfall).
+  The footpath continues to climb up on the side of (the #mountain).
+  (notice #waterfall)
+(narrate leaving * #north)(from * go #north to room $Room)($Room is unvisited)
+  You turn away from (the #waterfall) and continue on (the #trail).
+(after [leave * #north])(#her_backpack is #wornby #her)
+  (#her) takes down her backpack and while she looks for something inside slips
+  on the wet stones. She looses her balance and trying to regain it she let go 
+  of (the #her_backpack) that tumbles down the slope and comes to a halt unreachably
+  far below.
+  (now)(#her_backpack is #in #rock_face)
+%%  (now)(out of reach #her_backpack)
+
+#waterfall
+(* is #in #below_waterfall)
+(name *) waterfall
+(descr *) Above you the water from a small creek falls down in thin strands for
+  at least 30 feet before it ends up overflowing (the #trail) next to you.
+(dict *) strands creek
+
+#rock_face
+(on-trail *)
+(from * go #south to #below_waterfall)
+(from * go #north to #saddle)
+(from * go #east to #overhanging_rock)
+(name *) area next to a rock face
+(uncountable *)
+(room header *) Rock Face
+(look *) 
+  On the right side of (the #trail) a steep rock face looms upwards.
+  Part of the rock face is overhanging and can be reached to the (#east).
+(appearance #her_backpack #in #rock_face)
+  Down below you can see (#her_backpack) stuck between two rocks, unreachable.
+(descr #her_backpack)(current room *)
+  The side of the mountain falls off nearly vertically and you do not see a way
+  to climb down to the spot where some rocks stopped (#her_backpack) from tumbling
+  all the way down to the valley below.
+(out of reach #her_backpack)(#her_backpack is #in #rock_face)
+
+(before [leave * #north])(current #weather is #rainy)
+  It is now pouring down with rain and your clothes are getting soaked.
+  (now)(current #weather is #thunderstorm)
+  (now)(#trousers is wet)
+  (now)(#t-shirt is wet)
+  (now)(#top is wet)
+  (now)(#shorts is wet)
+(narrate leaving * #north)(from * go #north to room $Room)($Room is unvisited)
+  You get going again and the winding (#trail) raises steeply up the rocky flank of 
+  (the #mountain) to where there is a saddle in the lowest point of the moutain ridge.
+
+(narrate leaving * #east)(current #weather is #thunderstorm)
+  "Let's take shelter here." you tell (#her) and she follows you to the dry space
+  under the overhanging rock. (par)
+  (#her) looks down at her soaked clothes and curses.
+
+#overhanging_rock
+(room *)
+(* is dry)
+(from * go #west to #rock_face)
+(name *) space under an overhanging rock
+(singleton *)
+(heads *) space rock
+(room header *) Overhanging Rock
+(look *) You are under the overhanging part of a rock formation facing the
+  (#trail) (#west) of you. There is a small patch of dry but still green (#grass)
+  growing here.
+
+(on every tick in #overhanging_rock)(#her is cold)(#her is #in #overhanging_rock)
+  (select)
+  (or)
+  (#her) is looking at (the #clouds) frowning: "Does not look like it will stop
+  any time soon."
+	(or)
+	"Damn, there is nothing dry left to change into." (#her) tells you.
+  (or)
+  (or)
+  "We should head back." (#her) says.
+  (now)(#her goal is #home)
+  (or)
+  "This will not stop. Let's go now!" (#her) exclaims.
+  (or)
+  (#her) is looking at you intensely.
+	(stopping)
+
+#grass
+(* is #in #overhanging_rock)
+(name *) grass
+(uncountable *)
+(descr *) There is nothing special about the grass here.
+(dict *) patch green
+
+#saddle
+(on-trail *)
+(from * go #south to #overhanging_rock)
+(name *) on the saddle
+(singleton *)
+(room header *) On the Saddle
+(look *) 
+  You reached the saddle on the ridge. The presumably magnificient view into
+  the next valley is completely obscured by a wall of clouds that drift across
+  the ridge. (The #trail) turns (#east) onto the ridge towards the summit of
+  (the #mountain) and vanishes into (the #clouds).
+  (notice #clouds)
+
+(prevent [leave * #east])(current #weather is #thunderstorm)
+  Laura looks at you and says: "We will not make it to the top in this weather.
+  We should rather look for shelter."
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Chapter 4 - Romantic End
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Inside the Hut
+#inside_hut
+(room *)
+(indoors *)
+(* is dry)
+(from * go #up through #ladder to #attic)
+(from * go #out through #door to #outside_hut)
+(name *) inside the hut
+(proper *)
+(room header *) Inside Hut
+(look *) 
+  A sparse single room hut faintly lit by (a #window). A rough wooden ladder
+  leads up to the attic and (the #door) leads outside to the front of the hut.
+(appearance #her #in *)
+  (#her) is looking around the hut.
+
+(add #window to scope)(current room #inside_hut)
+(prevent [climb #window])(current room *) The door should be easier to use than
+  climbing back through the window.
+(prevent [leave #inside_hut #out])(current #weather is #thunderstorm)
+    You take a look outside but it still rains like mad so you quickly retreat 
+    back inside.
+
+#door
+(door *)
+(lockable *)
+(name *) wooden door
+(descr *) A small wooden door leading into (the #hut). (if) (* is locked) (then)
+  There is a closed latch on the inside of (the *) keeping it locked.
+  (else) The latch on the inside of (the *) is open. (endif)
+(after [open *])(current room #inside_hut)(#her is #in #outside_hut)
+  (let #her go #in)
+  As you peek outside you see (#her) smiling. She moves towards the door and you
+  step aside to make room for her to enter.
+  With (#her) now inside the hut feels even more tiny.
+
+#latch
+(openable *)
+(* is #partof #door)
+(name *) latch
+(descr *)
+  (if)(* is closed)(current room #outside_hut)(then)
+    On the inside of the (#door) there seems to be a latch attached.
+  (elseif)(* is closed)(then) It locks the (#door).
+  (else) It can be used to lock the (#door).(endif)
+(out of reach *)(current room #outside_hut)
+(perform [open #latch]) You shift the latch unlocking the door.
+  (now)(#door is unlocked)(now)(#latch is open)
+(perform [close #latch]) You shift the latch back locking the door.
+    (now)(#door is locked)(now)(#latch is closed)
+(instead of [use #latch])(#latch is closed)(try [open #latch])
+(instead of [use #latch])(#latch is open)(try [close #latch])
+(instead of [unlock #door])(try [open #latch])
+(instead of [lock #door])(try [close #latch])
+    
+#table
+(name *) table
+(supporter *)
+(* is #in #inside_hut)
+(descr *) A wooden table painted white. It has (a #drawer) in its long side.
+
+#drawer
+(name *) drawer
+(container *)
+(openable *)
+(closed *)
+(* is #partof #table)
+(descr *) Set in the long side of (the #table) there is a (if)(* is closed)(then)
+  closed (endif)(*).(if)(* is open)(then)Someone left it open.(endif)
+
+#matchbox
+(name *) matchbox
+(item *)
+(container *)
+(lighter *)
+(* is #in #drawer)
+(descr *) (* has left $current)
+  (if)($current = 0)(then)An empty matchbox.
+  (else)Opening the matchbox reveals that there are some matches left.(endif)
+(plural dict *) matches
+(instead of [open *])(try [examine *])
+(* has left 4)
+
+#match
+(name *) match
+(item *)
+(lightable *)
+(lighter *)(* is lit)
+(* has ticks left burning 3)
+(* is #in #matchbox)
+
+#ladder
+(door *)
+(open *)
+~(openable *)
+(name *) ladder
+(descr *)(current room #inside_hut) A wooden ladder leads up to a dark (#attic).
+(descr *)(current room #attic) A wooden ladder leads back down to the ground
+  level of the hut.
+(instead of [climb *])(current room #inside_hut)(try [go #up])
+(instead of [climb *])(current room #attic)(try [go #down])
+
+#attic
+(room *)
+(indoors *)
+(* is dry)
+(from * go #down through #ladder to #inside_hut)
+(name *) attic
+(room header *) Dark Attic
+(inherently dark *)
+(look *) An attic without window. In one corner there is (a #bed).(notice #bed)
+  (if)(#candle is pristine)(then)
+    (A #candle) stands next to it on the floor.(notice #candle)
+  (endif)
+%% Once the player has become Laura, she can't leave the attic.
+(prevent [leave * #down])(current player #her)
+  It's quite cosy up here. Why would you want to leave now?
+
+%% Laura entering attic once candle is lit
+(on every tick in #attic)(current player #him)
+  (#her is #in #inside_hut)(#candle is lit)
+  (let #her go #up)
+  (make appearances #in #attic)
+
+#bed
+(actor supporter *)
+(* is #in #attic)
+(name *) bunk bed
+(descr *) It's a single bed set in the dim corner of the hut. The mattress looks
+  old and worn.
+(dict *) mattress
+
+%% Becoming Laura when entering the bed
+(after [climb #bed])(current player #him)(#candle is lit)
+  (let #her climb #bed)
+  (now)~(#candle is lit)
+  (select player #her)
+  (#her) sits down on (the #bed) next to you. She briefly looks at you but quickly
+  turns back. After a short pause she leans forward and blows out (the #candle).
+  (par)
+  Press any key to continue.
+  (get key $)
+  (tick)
+  (clear)
+  (try [look])
+
+(narrate #her climbing #bed)
+
+(add *($Obj has ancestor #bed) to scope)(current room #attic)(current player #her)
+
+#candle
+(name *)~(* is lit) candle
+(name *)(* is lit) lit candle
+(item *)
+(lightable *)
+(* is #in #attic)
+(descr *) (A #candle).
+
+%% lightable items with state: not lit / lit
+%% Light candle with match
+(unlikely [light #candle with #matchbox])
+(before [light #match | $])
+  	(ensure #match is held)
+
+(prevent [light $ with #matchbox])(#matchbox has left 0)
+  There are no matches left in (the #matchbox).
+(prevent [light $Obj with #matchbox])~($Obj = #match)
+  With (the #matchbox) you can only light matches.
+
+(perform [light $Obj with #matchbox])
+	(narrate lighting $Obj with #matchbox)
+	(now) ($Obj is lit)
+  (#matchbox has left $remaining)
+  ($remaining minus 1 into $new)
+  (if)($new = 0)(then)
+    (now)(#match is nowhere)
+  (endif)
+  (now)(#matchbox has left $new)
+
+(after [light $ with $])
+  (current room $Room)
+  (inherently dark $Room)
+  (tick)
+  (try [look])
+
+(on every tick)(#match is lit)
+  (#match has ticks left burning $Remaining)
+  ($Remaining minus 1 into $New)
+  (if)($New = 0)(then)
+    The match burns out and you flick it away.
+    (now)(#match is not lit)
+    (now)(#match has ticks left burning 3)
+    (now)(#match is #in #matchbox)
+  (else)
+    (now)(#match has ticks left burning $New)
+  (endif)
+
+(appearance #her #in #attic)(#her is cold)(current player #him)
+  (#her) shivers in her wet clothes.
+
+(on every tick in #attic)(current player #her)(#her is cold)
+  (par)
+  (select)
+  You are shivering in your wet clothes. It would be better to get rid of them.
+  (or)
+  No-one can see you here. It's save to remove your wet clothes.
+  (at random)
+
+(prevent [$ #him])(#her is cold)
+  You feel so cold that you cannot focus on this right now.
+
+(perform [talk to #him]) You are not sure what to say in this situation. Maybe your feelings are best
+  conveyed by other means.
+(perform [listen to #him]) You hear (#him) breathing silently next to you.
+(instead of [listen])(current player #her)
+  (try [listen to #him])
+(instead of [touch #him])
+  (try [kiss #him])
+(perform [kiss #him]) You lean closer to the source of the faint sound that you identify as (#him)
+  breathing. Your hands find his chest and once you made contact you quickly
+  proceed to find his lips.
+  (par)
+  (game over { The End. })
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Chapter X - Game Mechanics
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Goals for NPCs, for Laura this is [#summit, #home, #shelter]
+(#her goal is #summit)
+
+%% Affection of Laura for the player [#annoyed, #reserved, #interested]
+(#her emotion is #reserved)
+
+%% Basic needs for Laura: #her is cold, #her is hungry
+
+
+%% Weather changes (current #weather is [#sunny,#cloudy,#rainy,#thunderstorm])
+#weather
+(topic *)
+(current #weather is #sunny)
+
+%% Leaving/entering messages on the trail
+@($Person follows) ~($Person is going ahead)
+
+(before [leave (on-trail $) #north])
+  (now)(#her is going ahead)
+(before [leave (on-trail $) #south])
+  (now)(#her follows)
+
+%% Laura following the player when on trail
+(before [leave *(on-trail $Room) $Dir])
+  (let #her go $Dir)
+
+(narrate leaving (on-trail $) #north)
+  You get moving again along (the #trail) heading north.
+  (#her) takes the lead and you follow in her footsteps.
+(narrate leaving (on-trail $) #south)
+  You head back south along (the #trail).
+  (#her) follows you reluctantly.
+
+%% Turn off standard leaving msg
+(narrate #her leaving (on-trail $) $ to $)
+
+%% Laura making appearance on the trail
+(appearance #her #in (on-trail $))(#her is going ahead)
+  You can see (#her) on the trail waiting for you to catch up.
+(appearance #her #in (on-trail $))(#her follows)
+  (#her) is approaching on the (#trail) and now waiting for you to go on.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Possession relationship for body parts and clothing
+
+%% Clothes can be wet
+@($Obj is dry)  ~($Obj is wet)
+@(outerwear $Obj) ~(underwear $Obj)
+((underwear $) is hidden)
+((bodypart $) is hidden)
+
+%% Person is cold when wearing something wet
+@($Person is cold) *($Obj is #wornby $Person)($Obj is wet)
+
+(name (possession $possession))
+ (if)
+  ($possession belongs to $owner)
+ (then)
+  (if)(current player $owner)(then)your(else)
+  (their $owner)(endif)
+ (endif)
+ (possession name $possession)
+ (if)($possession is wet)(then) %% clothing only!
+  (space)\(wet\)
+ (endif)
+
+(dict ($ belongs to $owner))
+ *(dict $owner)
+
+(proper (possession $possession))
+ (if)
+  ($possession belongs to $owner)
+ (then)
+  (proper $owner)
+ (else)
+  (possession proper $possession)
+ (endif)
+
+(possession proper $)
+ (fail)
+
+(singleton (possession $possession))
+ (if)
+  ($possession belongs to $owner)
+ (then)
+  (singleton $owner)
+ (else)
+  (possession singleton $possession)
+ (endif)
+
+(possession singleton $)
+ (fail)
+
+(possession *(bodypart $))
+(dict (bodypart $))
+  bodypart
+(plural dict (bodypart $))
+  bodyparts
+(item (bodypart $))
+
+(possession *(clothing $))
+(dict (clothing $))
+  clothing garment
+(plural dict (clothing $))
+  clothings clothes garments
+(wearable (clothing $))

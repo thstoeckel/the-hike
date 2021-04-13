@@ -1,0 +1,120 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Movement on the trail
+
+%% Outdoor & trail locations
+@(outdoors $Room)  ~(indoors $Room)
+@(off-trail $Room)  ~(on-trail $Room)
+
+%% New directions
+#ahead
+(direction *)
+(name *) on
+(dict *) forward onward ahead
+(opposite of * is #back)
+
+#back
+(direction *)
+(name *) back
+(dict *) return
+(opposite of * is #ahead)
+
+(room *(on-trail $))
+(from (on-trail $) go #down to #south)
+(from (on-trail $) go #up to #north)
+(from (on-trail $) go #back to #south)
+(from (on-trail $) go #ahead to #north)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% New Actions
+
+@($Obj is not lit)			~($Obj is lit)
+((lightable $) is not lit)
+(*(lightable $Obj) provides light)($Obj is lit)
+
+%% Light <obj> with <obj>
+(understand [light | $Words] as [light $Obj with $Lighter])
+  *(split $Words by [with using] into $Left and $Right)
+  *(understand $Right as single object $Lighter preferably held)
+  *(understand $Left as single object $Obj)
+  (lightable $Obj)
+  ($Obj is not lit)
+  (lighter $Lighter)
+
+(prevent [light $Obj with $Lighter])~(lighter $Lighter)
+  (The $Lighter) cannot be used to light (the $Obj).
+
+(understand [light | $Words] as [light $Obj])
+	*(understand $Words as single object $Obj)
+	(lightable $Obj)
+	($Obj is not lit)
+
+(unlikely [light $Obj | $])
+	~(lightable $Obj) (or) ($Obj is lit)
+
+(before [light $ with $Lighter])
+  	(ensure $Lighter is held)
+
+(instead of [light $Obj])
+  	(current player $Player)
+  	*($Lighter is nested #heldby $Player)
+  	(lighter $Lighter)
+  	(line) \(with (the $Lighter)\) (line)
+  	(try [light $Obj with $Lighter])
+
+(describe action [light $Obj])
+	light (the full $Obj)
+
+(prevent [light $Obj | $])
+	($Obj is lit)
+	(The $Obj is) already lit.
+
+(prevent [light $Obj | $])
+	~(lightable $Obj)
+	(The $Obj) can't be lit.
+
+(prevent [light $ with $Obj])
+  (when $Obj isn't directly held)
+
+(narrate lighting $Obj with $Lighter)
+	You light (the $Obj) with (the $Lighter).
+
+(perform [light $Obj with $Lighter])
+	(narrate lighting $Obj with $Lighter)
+	(now) ($Obj is lit)
+
+%% Blow out <obj>
+(understand [blow | $Words] as [blow out $Obj])
+	*(split $Words by [out] into $Left and $Right)
+	{
+		($Left = [])
+		*(understand $Right as non-all object $Obj)
+	(or)
+		($Right = [])
+		*(understand $Left as non-all object $Obj)
+	}
+
+(understand [blow | $Words] as [blow out $Obj])
+	*(understand $Words as single object $Obj)
+	(lightable $Obj)
+	($Obj is lit)
+
+(unlikely [blow out $Obj])
+	~(lightable $Obj) (or) ($Obj is not lit)
+
+(describe action [blow out $Obj])
+	blow (the full $Obj) out
+
+(prevent [blow out $Obj])
+	~(lightable $Obj)
+	(The $Obj) can't be blown out.
+
+(prevent [blow out $Obj])
+	($Obj is not lit)
+	(The $Obj is) already out.
+
+(narrate blowing out $Obj)
+	You blow (the $Obj) out.
+
+(perform [blow out $Obj])
+	(narrate blowing out $Obj)
+	(now) ($Obj is not lit)
